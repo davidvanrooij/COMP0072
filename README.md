@@ -16,3 +16,8 @@ Srinivasan Arun (18109601) <br>
 #### IMPORTANT! EVERY COMMIT TO THE MASTER BRANCH GET DEPLOYED TO LIVE PRODUCTION
 [/Client-side](/Client-side) gets deployed to https://webmomentum.io <br />
 [/API](/API) gets deployed to http://awesome-api.netlify.com
+
+
+## issue.sh
+
+This project uses https://issue.sh to manage issues and milestones. Install https://issue.sh/#install the plugin first to see the additional tabs on this project. 
