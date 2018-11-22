@@ -1,5 +1,3 @@
-// dataURL = canvas.toDataURL();
-
 var ctx = document.getElementById('canvas').getContext('2d');
 
 var init = true;
@@ -36,3 +34,5 @@ canvas.addEventListener('mousedown', function(){
 // canvas.addEventListener('mouseup', function(event){
 // 	canvas.removeEventListener('mousedown');
 // })
+
+dataURL = canvas.toDataURL();
