@@ -66,7 +66,7 @@ canvas.addEventListener('mousedown', function(event){
 	}
 	x_0 = event.layerX;
 	y_0 = event.layerY;
-	
+
 	mouse_pressed = true;
 });
 
@@ -80,4 +80,32 @@ canvas.addEventListener('mouseout', function(){
 	x_0, y_0 = (null, null);
 });
 
-dataURL = canvas.toDataURL();
+
+var ClassifyText = function (){
+
+	// Hides any old error's
+	$('.alert').hide();
+
+	// Create border around canvas
+	create_border(); 
+
+	// Save canvas
+	dataURL = canvas.toDataURL();
+
+	$.ajax({
+		url: 'http://www.google.com/12',
+		method: 'GET'
+	}) .done(function() {
+		$('.results').show();
+		$('#result').text('0900');
+	})
+	.fail(function(error) {
+		console.log('my error', error, error.status, error.responseText, error.statusText);
+		$('#error_status').text('Error ' + error.status);
+		$('#error_test').text(error.statusText);
+		$('.alert').show();
+	});
+
+	// console.log(dataURL);
+
+}

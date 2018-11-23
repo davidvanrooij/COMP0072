@@ -7,7 +7,7 @@
 	<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,600|Noto+Sans" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style.css">
 
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
@@ -23,23 +23,29 @@
 		</div>
 	</header>
 
-	<div class="container pb-5 mb-5">
-		<div class="row" style="width: 700px; margin: 0 auto;">
+	<div class="container pb-5 mb-5" style="width: 700px; margin: 0 auto;">
+		<div class="row" >
 			<div class="col-12">
 				<canvas id="canvas" width="670px" height="300px"></canvas>
 			</div>
 		</div>
-		<div class="row pb-5" style="width: 700px; margin: 0 auto; border-bottom: 2px solid rgba(0,0,0,0.1);">
+		<div class="row pb-5" style="border-bottom: 2px solid rgba(0,0,0,0.1);">
 			<div class="col-12 d-flex justify-content-between align-items-center">
 				<a href="#" class="btn btn-outline-secondary" onclick="clear_canvas();"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="fill: #ffc107;"><path d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/><path d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/></svg></span> Clear canvas</a>
-				<a href="#" class="btn btn-primary btn-lg" onclick="create_border()"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill: #fff;" d="M170.718 216.482L141.6 245.6l93.6 93.6 208-208-29.118-29.118L235.2 279.918l-64.482-63.436zM422.4 256c0 91.518-74.883 166.4-166.4 166.4S89.6 347.518 89.6 256 164.482 89.6 256 89.6c15.6 0 31.2 2.082 45.764 6.241L334 63.6C310.082 53.2 284.082 48 256 48 141.6 48 48 141.6 48 256s93.6 208 208 208 208-93.6 208-208h-41.6z"/></svg></span> Classify now!</a>
+				<a href="#" class="btn btn-primary btn-lg" onclick="ClassifyText()"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill: #fff;" d="M170.718 216.482L141.6 245.6l93.6 93.6 208-208-29.118-29.118L235.2 279.918l-64.482-63.436zM422.4 256c0 91.518-74.883 166.4-166.4 166.4S89.6 347.518 89.6 256 164.482 89.6 256 89.6c15.6 0 31.2 2.082 45.764 6.241L334 63.6C310.082 53.2 284.082 48 256 48 141.6 48 48 141.6 48 256s93.6 208 208 208 208-93.6 208-208h-41.6z"/></svg></span> Classify now!</a>
 			</div>
 
 			<hr>
 		</div>
-		<div class="mt-5 text-left text" style="width: 700px; margin: 0 auto;">
+		<div class="alert alert-warning alert-dismissible fade show mt-5" style="display: none;"> 
+		  <strong id="error_status">Holy guacamole!</strong> <span id="error_text">You should check in on some of those fields below.</span>
+		  <button type="button" class="close" onclick="$('.alert').hide()" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="mt-5 text-left text results" style="width: 700px; margin: 0 auto; display: none;">
 			<h4>We were able to classify:</h4>
-			<h1>037</h1>			
+			<h1 id="result">037</h1>			
 		</div>
 		
 	</div>
