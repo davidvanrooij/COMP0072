@@ -52,6 +52,8 @@ function draw_line(event) {
 show_welcome_text();
 
 
+// Add event listeners for desktop
+
 canvas.addEventListener('mousemove', function(event){
 	if(mouse_pressed){
 		draw_line(event);
@@ -76,6 +78,37 @@ canvas.addEventListener('mouseup', function(){
 });
 
 canvas.addEventListener('mouseout', function(){
+	mouse_pressed = false;
+	x_0, y_0 = (null, null);
+});
+
+
+// Add event listeners for mobile
+
+canvas.addEventListener('touchmove', function(event){
+	if(mouse_pressed){
+		draw_line(event);
+	}
+});
+
+canvas.addEventListener('touchstart', function(event){
+	// Remove welcome text the first time you click on the canvas
+	if(init){
+		clear_canvas();
+		init = false;
+	}
+	x_0 = event.layerX;
+	y_0 = event.layerY;
+
+	mouse_pressed = true;
+});
+
+canvas.addEventListener('touchend', function(){
+	mouse_pressed = false;
+	x_0, y_0 = (null, null);
+});
+
+canvas.addEventListener('touchcancel', function(){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
 });
