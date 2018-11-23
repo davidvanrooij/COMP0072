@@ -11,16 +11,26 @@ header{
 	background-color: #1FD8A9;
 	width: 100%; 
 	padding: 5em;
+	border-top: 8px solid rgba(0,0,0,0.07);
 }
 
 header p {
 	color: #ceedf0;
 }
 
-h1, h2, h3{
-	font-family: 'IBM Plex Sans', sans-serif;
+header h1, header h2, header h3{
 	text-align: center;
 	color: #fff;
+}
+
+h1, h2, h3, h4{
+	font-family: 'IBM Plex Sans', sans-serif;
+}
+
+h4{
+	font-weight: 600;
+	color: #000;
+	margin: 1em 0;
 }
 
 h1{
@@ -31,6 +41,11 @@ h1{
 
 h3{
 	font-weight: 300;
+}
+
+.text h1{
+	letter-spacing: 0.1em;
+	font-size: 5em;
 }
 
 canvas{

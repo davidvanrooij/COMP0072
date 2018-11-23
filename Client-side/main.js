@@ -2,13 +2,18 @@ var ctx = document.getElementById('canvas').getContext('2d');
 
 var init = true;
 
+// Function to show welcome text
 function show_welcome_text() {
   ctx.font = '20px Noto Sans';
   ctx.fillText('Start drawing symbols here!', 100, 150-10);
 }
 
-show_welcome_text();
+// Clear canvas
+function clear_canvas(){
+	ctx.clearRect(0,0,canvas.width, canvas.height);
+}
 
+// Let the user draw lines
 function draw_line(event) {
   var x = event.layerX;
   var y = event.layerY;
@@ -18,11 +23,15 @@ function draw_line(event) {
 
 }
 
+show_welcome_text();
+
+
+
 canvas.addEventListener('mousedown', function(){
 
 	// Remove welcome text the first time you click on the canvas
 	if(init){
-		ctx.clearRect(0,0,canvas.width, canvas.height);
+		clear_canvas();
 		init = false;
 	}
 
