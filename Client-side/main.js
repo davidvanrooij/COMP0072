@@ -1,11 +1,14 @@
 var ctx = document.getElementById('canvas').getContext('2d');
 
 var init = true;
+var mouse_pressed = false;
+var x_0, y_0 = (0, 0);
+
 
 // Function to show welcome text
 function show_welcome_text() {
-  ctx.font = '20px Noto Sans';
-  ctx.fillText('Start drawing symbols here!', 100, 150-10);
+	ctx.font = '20px Noto Sans';
+	ctx.fillText('Start drawing symbols here!', 100, 150-10);
 }
 
 // Clear canvas
@@ -13,35 +16,68 @@ function clear_canvas(){
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 }
 
+function create_border(){
+	// top
+	ctx.clearRect(0,0, canvas.width, 10);
+
+	// left
+	ctx.clearRect(0,0, 10, canvas.height);
+
+	// right
+	ctx.clearRect(canvas.width - 10, 0, 10, canvas.height);
+
+	// bottom
+	ctx.clearRect(0, canvas.height - 10, canvas.width, 10);
+}
+
 // Let the user draw lines
 function draw_line(event) {
-  var x = event.layerX;
-  var y = event.layerY;
-  ctx.beginPath();
-	ctx.arc(x,y,10,0,2*Math.PI);
-	ctx.fill();
+	// Get curser coordinates 
+	var x_1 = event.layerX;
+	var y_1 = event.layerY;
 
+	ctx.beginPath();
+	ctx.moveTo(x_0,y_0);
+	ctx.lineTo(x_1,y_1);
+	ctx.lineWidth = 10;
+	ctx.lineJoin = 'round';
+	ctx.closePath();
+	ctx.stroke();
+
+	// Save curser coordinates as last point
+	x_0 = x_1;
+	y_0 = y_1;
 }
 
 show_welcome_text();
 
 
+canvas.addEventListener('mousemove', function(event){
+	if(mouse_pressed){
+		draw_line(event);
+	}
+});
 
-canvas.addEventListener('mousedown', function(){
-
+canvas.addEventListener('mousedown', function(event){
 	// Remove welcome text the first time you click on the canvas
 	if(init){
 		clear_canvas();
 		init = false;
 	}
-
-	canvas.addEventListener('mousemove', function(event){
-		draw_line(event);
-	});
+	x_0 = event.layerX;
+	y_0 = event.layerY;
+	
+	mouse_pressed = true;
 });
 
-// canvas.addEventListener('mouseup', function(event){
-// 	canvas.removeEventListener('mousedown');
-// })
+canvas.addEventListener('mouseup', function(){
+	mouse_pressed = false;
+	x_0, y_0 = (null, null);
+});
+
+canvas.addEventListener('mouseout', function(){
+	mouse_pressed = false;
+	x_0, y_0 = (null, null);
+});
 
 dataURL = canvas.toDataURL();
