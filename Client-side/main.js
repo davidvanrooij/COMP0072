@@ -36,13 +36,18 @@ function draw_line(event) {
 	var x_1 = event.layerX;
 	var y_1 = event.layerY;
 
+	// var cursor_speed = (Math.sqrt((x_1 - x_0)*(x_1 - x_0) + (y_1- y_0)*(y_1 - y_0)) + 1) * -0.3;
+	// console.log(cursor_speed);
+
 	ctx.beginPath();
 	ctx.moveTo(x_0,y_0);
 	ctx.lineTo(x_1,y_1);
-	ctx.lineWidth = 10;
+	ctx.lineWidth = 10; // + cursor_speed;
 	ctx.lineJoin = 'round';
 	ctx.closePath();
 	ctx.stroke();
+
+
 
 	// Save curser coordinates as last point
 	x_0 = x_1;
@@ -123,11 +128,14 @@ var ClassifyText = function (){
 	create_border(); 
 
 	// Save canvas
-	dataURL = canvas.toDataURL();
+	canvas_url = canvas.toDataURL();
 
 	$.ajax({
 		url: 'http://www.google.com/12',
 		method: 'GET'
+		data: { 
+			imgBase64: canvas_url
+		}
 	}) .done(function() {
 		$('.results').show();
 		$('#result').text('0900');
@@ -138,7 +146,5 @@ var ClassifyText = function (){
 		$('#error_test').text(error.statusText);
 		$('.alert').show();
 	});
-
-	// console.log(dataURL);
 
 }
