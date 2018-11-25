@@ -132,7 +132,7 @@ var ClassifyText = function (){
 
 	$.ajax({
 		url: 'http://www.google.com/12',
-		method: 'GET'
+		method: 'GET',
 		data: { 
 			imgBase64: canvas_url
 		}
