@@ -1,0 +1,11 @@
+{
+  "name": "drawing-web-app",
+  "version": "1.0.0",
+  "description": "Client interface to draw numbers or letters on a canvas",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jQuery": "1.7.4"
+  }
+}
