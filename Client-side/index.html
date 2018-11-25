@@ -1,1 +1,57 @@
-<h1>Hello, world!</h1>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>NEURAL NETWORK CLASS/F/ER</title>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,600|Noto+Sans" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<h1>Next-Gen Text Classifier</h1>
+			<h3>Brought to you with <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="fill: #fff;"><path d="M349.6 64c-36.4 0-70.7 16.7-93.6 43.9C233.1 80.7 198.8 64 162.4 64 97.9 64 48 114.2 48 179.1c0 79.5 70.7 143.3 177.8 241.7L256 448l30.2-27.2C393.3 322.4 464 258.6 464 179.1 464 114.2 414.1 64 349.6 64zm-80.8 329.3l-4.2 3.9-8.6 7.8-8.6-7.8-4.2-3.9c-50.4-46.3-94-86.3-122.7-122-28-34.7-40.4-63.1-40.4-92.2 0-22.9 8.4-43.9 23.7-59.3 15.2-15.4 36-23.8 58.6-23.8 26.1 0 52 12.2 69.1 32.5l24.5 29.1 24.5-29.1c17.1-20.4 43-32.5 69.1-32.5 22.6 0 43.4 8.4 58.7 23.8 15.3 15.4 23.7 36.5 23.7 59.3 0 29-12.5 57.5-40.4 92.2-28.8 35.7-72.3 75.7-122.8 122z"></path></svg></span>  by Business as Usual</h3>
+			<hr>
+			<p>Balbinetti Oliviero, Caballero Mauricio, Þórarinsson Þorbjörn, van Rooij David & Srinivasan Arun </p>
+		</div>
+	</header>
+
+	<div class="container pb-5 mb-5" style="width: 700px; margin: 0 auto;">
+		<div class="row" >
+			<div class="col-12">
+				<canvas id="canvas" width="670px" height="300px"></canvas>
+			</div>
+		</div>
+		<div class="row pb-5" style="border-bottom: 2px solid rgba(0,0,0,0.1);">
+			<div class="col-12 d-flex justify-content-between align-items-center">
+				<a href="#" class="btn btn-outline-secondary" onclick="clear_canvas();"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="fill: #ffc107;"><path d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/><path d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/></svg></span> Clear canvas</a>
+				<a href="#" class="btn btn-primary btn-lg" onclick="ClassifyText()"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill: #fff;" d="M170.718 216.482L141.6 245.6l93.6 93.6 208-208-29.118-29.118L235.2 279.918l-64.482-63.436zM422.4 256c0 91.518-74.883 166.4-166.4 166.4S89.6 347.518 89.6 256 164.482 89.6 256 89.6c15.6 0 31.2 2.082 45.764 6.241L334 63.6C310.082 53.2 284.082 48 256 48 141.6 48 48 141.6 48 256s93.6 208 208 208 208-93.6 208-208h-41.6z"/></svg></span> Classify now!</a>
+			</div>
+
+			<hr>
+		</div>
+		<div class="alert alert-warning alert-dismissible fade show mt-5" style="display: none;"> 
+		  <strong id="error_status">Holy guacamole!</strong> <span id="error_text">You should check in on some of those fields below.</span>
+		  <button type="button" class="close" onclick="$('.alert').hide()" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="mt-5 text-left text results" style="width: 700px; margin: 0 auto; display: none;">
+			<h4>We were able to classify:</h4>
+			<h1 id="result">037</h1>			
+		</div>
+		
+	</div>
+	
+</body>
+
+<script src="main.js"></script>
+
+</html>
