@@ -164,5 +164,11 @@ if __name__ == "__main__":
 
     for i in range(10):
         print('Accuracy of digit %d : %2d %%' % (i, 100*Class_correct[i].item()/Class_total[i]))
+
+
+    # Save NN to file
+    torch.save(net, 'tensor.pt')
         
     print('\n\n############ FINISH ############')
+
+
