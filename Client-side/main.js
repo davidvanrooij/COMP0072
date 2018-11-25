@@ -130,15 +130,25 @@ var ClassifyText = function (){
 	// Save canvas
 	canvas_url = canvas.toDataURL();
 
+	$('#imageURL').text(canvas_url);
+
+	console.log(canvas_url);
+
 	$.ajax({
+<<<<<<< Updated upstream
 		url: 'http://www.google.com/12',
 		method: 'GET',
+=======
+		url: 'http://127.0.0.1:5000/image',
+		method: 'POST',
+>>>>>>> Stashed changes
 		data: { 
 			imgBase64: canvas_url
 		}
-	}) .done(function() {
+	}) .done(function(result) {
+		console.log(result);
 		$('.results').show();
-		$('#result').text('0900');
+		$('#result').text(result);
 	})
 	.fail(function(error) {
 		console.log('my error', error, error.status, error.responseText, error.statusText);
