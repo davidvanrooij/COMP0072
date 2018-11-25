@@ -135,13 +135,8 @@ var ClassifyText = function (){
 	console.log(canvas_url);
 
 	$.ajax({
-<<<<<<< Updated upstream
-		url: 'http://www.google.com/12',
-		method: 'GET',
-=======
 		url: 'http://127.0.0.1:5000/image',
 		method: 'POST',
->>>>>>> Stashed changes
 		data: { 
 			imgBase64: canvas_url
 		}
