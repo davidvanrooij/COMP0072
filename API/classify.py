@@ -110,8 +110,9 @@ class Neural_Network(nn.Module):
         print('Training finished')
 
 class ClassifyImage(object):
-    percentage_treshold = 0.02
+    percentage_treshold = 0.035
     output_size = 28
+    border_size = 10
         
     def __init__(self):
         self.crop_list = []
@@ -196,10 +197,6 @@ class ClassifyImage(object):
 
             
             self.cropped_images.append(self.cropped_image)
-            # Classify resized image
-            #cropped_resized_reshaped = np.array(cropped_image_resized).flatten().reshape(1, -1)
-            #print('Number classified: {0}'.format(classifier.predict(cropped_resized_reshaped)[0]))
-
 
         print('{0} contours dropped'.format(self.count_dropped))
         
@@ -212,15 +209,16 @@ class ClassifyImage(object):
         self.apply_cropping()
         
         for image in self.cropped_images:
+            net = torch.load('tensor.pt')
+            
             image = Image.fromarray(image)
             
             transfrom = transforms.Compose([
                 transforms.Grayscale(),
-                transforms.Resize(self.output_size),
+                transforms.Resize(self.output_size - self.border_size),
+                transforms.CenterCrop(self.output_size),
                 transforms.ToTensor(),
             ])
-
-            net = torch.load('tensor.pt')
 
             img_tensor = transfrom(image)
             img_tensor.unsqueeze_(0)
