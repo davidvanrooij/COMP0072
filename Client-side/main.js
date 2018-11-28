@@ -14,6 +14,12 @@ function show_welcome_text() {
 // Clear canvas
 function clear_canvas(){
 	ctx.clearRect(0,0,canvas.width, canvas.height);
+
+	// Hides any old error's
+	$('.alert').hide();
+
+	// Hide image string
+	$('#imageURL').text('');
 }
 
 function create_border(){
@@ -46,7 +52,6 @@ function draw_line(event) {
 	ctx.lineJoin = 'round';
 	ctx.closePath();
 	ctx.stroke();
-
 
 
 	// Save curser coordinates as last point
