@@ -17,6 +17,7 @@ dill==0.2.8.2
 entrypoints==0.2.3
 fastprogress==0.1.15
 Flask==1.0.2
+gunicorn==19.9.0
 idna==2.7
 ipykernel==5.1.0
 ipython==7.1.1
