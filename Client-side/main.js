@@ -140,7 +140,7 @@ var ClassifyText = function (){
 	console.log(canvas_url);
 
 	$.ajax({
-		url: 'http://127.0.0.1:5000/image',
+		url: 'https://bau-test-api.herokuapp.com/image',
 		method: 'POST',
 		data: { 
 			imgBase64: canvas_url
