@@ -95,6 +95,7 @@ class Neural_Network(nn.Module):
                     Total_pred += Pred_labels.size(0)
                     
                 Current_accuracy += (100 * Correct_pred)/Total_pred
+                Current_accuracy += (100 * Correct_pred)/Total_pred
 
                 if batch_index % 300 == 299:
                     
@@ -207,9 +208,12 @@ class ClassifyImage(object):
         self.list = []
         
         self.apply_cropping()
-        
+        net = Neural_Network()
+		net.load_state_dict(torch.load('tensor_sd.pt'))
+		net.eval()
+
         for image in self.cropped_images:
-            net = torch.load('tensor.pt')
+            
             
             image = Image.fromarray(image)
             
