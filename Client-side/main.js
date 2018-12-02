@@ -166,8 +166,8 @@ var ClassifyText = function(){
 
 		// Show errors
 		console.log('my error', error, error.status, error.responseText, error.statusText);
-		$('#error_status').text('Error ' + error.status);
-		$('#error_test').text(error.statusText);
+		$('#error_status').text('Error ' + error.status + ' (' + error.statusText + ')');
+		$('#error_text').text(error.responseText);
 		$('.alert').show();
 
 		// Set icons back to default state
