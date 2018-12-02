@@ -153,6 +153,9 @@ class ClassifyImage(object):
 
             self.crop_list.append({'y_min': self.y_min, 'height': self.height, 'x_min': self.x_min, 'width': self.width})
 
+        # Sort the array in logical order
+        self.crop_list = sorted(self.crop_list, key=lambda x: x['x_min']) 
+
         print('Number of contours found: {0}'.format(len(self.countours)))
              
         
