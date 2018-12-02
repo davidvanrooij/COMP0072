@@ -19,15 +19,23 @@ def status():
 @app.route('/image', methods=['POST'])
 def image():
 
-	image_base = request.form['imgBase64']
+	if not('imgBase64' in request.form):
+		return 'Missing imgBas64 input field', 400
 
-	image_base = image_base.replace('data:image/png;base64,', '')
-	im = np.array(Image.open(BytesIO(base64.b64decode(image_base))))[:, :, 3]
+	try:
+		image_base = request.form['imgBase64']
 
-	c = ClassifyImage()
-	c.set_img(im)
+		image_base = image_base.replace('data:image/png;base64,', '')
+		im = np.array(Image.open(BytesIO(base64.b64decode(image_base))))[:, :, 3]
 
-	return dumps(c.classify()), 200
+		c = ClassifyImage()
+		c.set_img(im)
+
+		return dumps(c.classify()), 200
+
+	except Exception as e:
+		print(e);
+		return 'Something went wrong: ' + str(e), 500
 
 
 if __name__ == "__main__":
