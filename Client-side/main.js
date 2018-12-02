@@ -124,8 +124,7 @@ canvas.addEventListener('touchcancel', function(){
 });
 
 
-var ClassifyText = function (){
-
+var ClassifyText = function(){
 
 	// Show loading icon
 	$('.spinner').css('display', 'inline-flex');
@@ -147,6 +146,7 @@ var ClassifyText = function (){
 	$.ajax({
 		url: 'https://bau-test-api.herokuapp.com/image',
 		method: 'POST',
+		crossDomain: true,
 		data: { 
 			imgBase64: canvas_url
 		}

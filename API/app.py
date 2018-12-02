@@ -1,6 +1,7 @@
 from classify import *
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 
 import base64
 from PIL import Image
@@ -11,12 +12,18 @@ from json import dumps
 
 app = Flask(__name__)
 
+# Allow CORS for all domains on all routes
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 @app.route('/status')
+@cross_origin()
 def status():
     return "OK", 200
  
 
 @app.route('/image', methods=['POST'])
+@cross_origin()
 def image():
 
 	if not('imgBase64' in request.form):
