@@ -209,7 +209,7 @@ class ClassifyImage(object):
         
         self.apply_cropping()
         net = Neural_Network()
-        net.load_state_dict(torch.load('tensor_sd.pt'))
+        net.load_state_dict(torch.load('./tensor_sd.pt'))
         net.eval()
 
         for image in self.cropped_images:
