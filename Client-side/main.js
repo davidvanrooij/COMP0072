@@ -126,6 +126,11 @@ canvas.addEventListener('touchcancel', function(){
 
 var ClassifyText = function (){
 
+
+	// Show loading icon
+	$('.spinner').css('display', 'inline-flex');
+	$('.label').hide();
+
 	// Hides any old error's
 	$('.alert').hide();
 
@@ -147,14 +152,27 @@ var ClassifyText = function (){
 		}
 	}) .done(function(result) {
 		console.log(result);
+
+		// Show results
 		$('.results').show();
 		$('#result').text(result);
+
+		// Set icons back to default state
+		$('.spinner').hide();
+		$('.label').css('display', 'inline-flex');
+
 	})
 	.fail(function(error) {
+
+		// Show errors
 		console.log('my error', error, error.status, error.responseText, error.statusText);
 		$('#error_status').text('Error ' + error.status);
 		$('#error_test').text(error.statusText);
 		$('.alert').show();
+
+		// Set icons back to default state
+		$('.spinner').hide();
+		$('.label').css('display', 'inline-flex');
 	});
 
 }
