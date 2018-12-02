@@ -111,7 +111,6 @@ class Neural_Network(nn.Module):
         print('Training finished')
 
 class ClassifyImage(object):
-    percentage_treshold = 0.035
     output_size = 28
     border_size = 10
         
@@ -151,9 +150,33 @@ class ClassifyImage(object):
             self.height = self.y_max - self.y_min
             
 
-            self.crop_list.append({'y_min': self.y_min, 'height': self.height, 'x_min': self.x_min, 'width': self.width})
+            self.crop_list.append({'y_min': self.y_min, 'height': self.height, 'x_min': self.x_min, 'width': self.width, 'y_max': self.y_max, 'x_max': self.x_max})
+
+        # Sort the array in logical order
+        self.crop_list = sorted(self.crop_list, key=lambda x: x['x_min']) 
+
+        # Checks if any item of crop list is an subset of another subset
+        # this happens when the inside of an say an 8 or 9 is selected as contour
+        # these contours needs to be removed before processing
+        self.to_be_deleted = []
+        for crop in self.crop_list: 
+            for crop_compare in self.crop_list:
+                x_min_within_x_axis = bool(crop['x_min'] > crop_compare['x_min'] and crop['x_min'] < crop_compare['x_max'])
+                x_max_within_x_axis = bool(crop['x_max'] < crop_compare['x_max'] and crop['x_max'] > crop_compare['x_min'])
+                
+                y_min_within_y_axis = bool(crop['y_min'] > crop_compare['y_min'] and crop['y_min'] < crop_compare['y_max'])
+                y_max_within_x_axis = bool(crop['y_max'] < crop_compare['y_max'] and crop['y_max'] > crop_compare['y_min'])
+                
+                # crop is subset of another crop when this is true
+                if(x_min_within_x_axis and x_max_within_x_axis and y_min_within_y_axis and y_max_within_x_axis):
+                    self.to_be_deleted.append(crop)
+               
+        # Delete al the items form the to be deleted list
+        self.crop_list = [x for x in self.crop_list if x not in self.to_be_deleted]    
 
         print('Number of contours found: {0}'.format(len(self.countours)))
+        print('Number of contours deleted: {0}'.format(len(self.to_be_deleted)))
+        print('Number in final crop list: {0}'.format(len(self.crop_list)))
              
         
     def apply_cropping(self):
@@ -164,17 +187,9 @@ class ClassifyImage(object):
         self.find_img_contours()
         
         for crop in self.crop_list:    
-            
-            self.precentage = (crop['height']*crop['width'])/(original_size_y*original_size_x)
-            
+
             # Crop image
             self.cropped_image = self.crop_image(self.img, crop['y_min'], crop['height'], crop['x_min'], crop['width'])
-
-            if(self.precentage < self.percentage_treshold):
-                self.count_dropped += 1
-                continue
-
-            print('  -  Percentage of crop / entire canvas {0:.2%}'.format(self.precentage))
 
             # Prepend and append white vertical white lines on each side to make it a square
             if(crop['height'] > crop['width']):

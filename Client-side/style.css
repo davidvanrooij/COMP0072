@@ -64,6 +64,7 @@ canvas{
 	display: inline-flex;
  	align-self: center;
 }
+
 .icon svg {
 	height: 1em;
 	width: 1em;
@@ -71,6 +72,37 @@ canvas{
 	top: .125em;
 }
 
+.spinner {
+	display: none;
+}
+
+.spinner svg{
+	animation: spinner 0.8s linear infinite;
+}
+
 .btn-primary{
 	background-color: #287CEC;
+}
+
+@-webkit-keyframes spinner {
+  from { 
+  	transform: rotate(0deg);
+  	-webkit-transform: rotate(0deg);
+  }
+  to { 
+  	transform: rotate(360deg);
+  	-webkit-transform: rotate(360deg);	
+  }
+}
+@-moz-keyframes spinner {
+  from { transform: rotate(0deg) }
+  to { transform: rotate(360deg) }
+}
+@-o-keyframes spinner {
+  from { transform: rotate(0deg) }
+  to { transform: rotate(360deg) }
+}
+@keyframes spinner {
+  from { transform: rotate(0deg) }
+  to { transform: rotate(360deg) }
 }
