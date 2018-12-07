@@ -64,10 +64,12 @@ function draw_line(event) {
 
 
 function lock_scroll(){
+	return true; 
 	$('html, body').css('overflow', 'hidden');
 }
 
 function release_scroll(){
+	return true;
 	$('html, body').css('overflow', 'auto');
 }
 
