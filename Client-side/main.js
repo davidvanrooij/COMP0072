@@ -115,6 +115,8 @@ canvas.addEventListener('touchmove', function(event){
 	if(mouse_pressed){
 		draw_line(event);
 	}
+
+	event.preventDefault();
 });
 
 canvas.addEventListener('touchstart', function(event){
