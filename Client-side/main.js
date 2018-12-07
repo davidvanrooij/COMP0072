@@ -59,6 +59,16 @@ function draw_line(event) {
 	y_0 = y_1;
 }
 
+
+function lock_scroll(){
+	$('html, body').css('overflow', 'hidden');
+}
+
+function release_scroll(){
+	$('html, body').css('overflow', 'auto');
+}
+
+
 show_welcome_text();
 
 
@@ -80,16 +90,22 @@ canvas.addEventListener('mousedown', function(event){
 	y_0 = event.layerY;
 
 	mouse_pressed = true;
+
+	lock_scroll();
 });
 
 canvas.addEventListener('mouseup', function(){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
+
+	release_scroll();
 });
 
 canvas.addEventListener('mouseout', function(){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
+
+	release_scroll();
 });
 
 
@@ -111,16 +127,22 @@ canvas.addEventListener('touchstart', function(event){
 	y_0 = event.layerY;
 
 	mouse_pressed = true;
+
+	lock_scroll();
 });
 
 canvas.addEventListener('touchend', function(){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
+
+	release_scroll();
 });
 
 canvas.addEventListener('touchcancel', function(){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
+
+	release_scroll();
 });
 
 
