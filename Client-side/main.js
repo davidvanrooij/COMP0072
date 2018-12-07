@@ -20,6 +20,9 @@ function clear_canvas(){
 
 	// Hide image string
 	$('#imageURL').text('');
+
+	// Hide old results
+	$('.results').hide();
 }
 
 function create_border(){
@@ -156,6 +159,9 @@ var ClassifyText = function(){
 
 	// Hides any old error's
 	$('.alert').hide();
+
+	// Hide former results
+	$('.results').hide();
 
 	// Create border around canvas
 	create_border(); 
