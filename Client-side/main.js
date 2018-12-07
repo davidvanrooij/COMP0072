@@ -150,6 +150,8 @@ canvas.addEventListener('touchend', function(event){
 });
 
 canvas.addEventListener('touchcancel', function(event){
+	return true;
+	
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
 
