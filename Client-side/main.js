@@ -135,19 +135,25 @@ canvas.addEventListener('touchstart', function(event){
 
 	mouse_pressed = true;
 
+	event.preventDefault();
+
 	lock_scroll();
 });
 
-canvas.addEventListener('touchend', function(){
+canvas.addEventListener('touchend', function(event){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
+
+	event.preventDefault();
 
 	release_scroll();
 });
 
-canvas.addEventListener('touchcancel', function(){
+canvas.addEventListener('touchcancel', function(event){
 	mouse_pressed = false;
 	x_0, y_0 = (null, null);
+
+	event.preventDefault();
 
 	release_scroll();
 });
