@@ -181,6 +181,9 @@ var ClassifyText = function(){
 			imgBase64: canvas_url
 		}
 	}) .done(function(result) {
+
+		result = result.replace(/(\[|\]|,)/g, '');
+
 		console.log(result);
 
 		// Show results
