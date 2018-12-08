@@ -1,237 +1,206 @@
 # Standard scientific Python imports
-
-from skimage import measure
-from skimage import io
-from skimage.transform import resize
-from skimage.filters import inverse
-
-from PIL import Image
+import os
 import numpy as np
-
 import torch
-import torchvision
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
+from torch.autograd import Variable
 import torchvision.transforms as transforms
 
-from torch.autograd import Variable
+from skimage import measure
+
+from PIL import Image
+
+import matplotlib.pyplot as plt
+
+from neural_network import Neural_Network
+
+if 'FLASK_ENV' in os.environ and os.environ['FLASK_ENV'] == 'development':
+    TENSOR_LOCATION = 'tensor_sd.pt'
+else:
+    TENSOR_LOCATION = './API/tensor_sd.pt'
 
 
-#Defining general variables.
-Momentum = 0.9
-Batch_size = 50
-Epochs_number = 5
-Learning_rate = 0.001
-np.random.seed(3)
-
-#Building the network.
-class Neural_Network(nn.Module):
-    
-    #Definition.
-    def __init__(self):
-        super(Neural_Network, self).__init__()
-        
-        self.conv1 = nn.Conv2d(1, 6, kernel_size=5, stride=1, padding=0)
-        self.conv2 = nn.Conv2d(6, 16, kernel_size=3, stride=1, padding=0)
-        
-        self.pool = nn.MaxPool2d(2, 2)
-        
-        self.fc1 = nn.Linear(16*5*5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-        
-        self.Losses = []
-        self.Accuracies = []
-     
-    #Forward function.    
-    def forward(self, x):
-
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16*5*5)
-        
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x) 
-        
-        return x 
-    
-    #Training function.
-    def train_net(self, Training_set, Epochs_number, Learning_rate, Momentum):
-        
-        Loss_function = nn.CrossEntropyLoss()
-        Optimizer = optim.SGD(net.parameters(), lr = Learning_rate, momentum = Momentum)
-
-        for epoch in range(Epochs_number):
-
-            Current_loss = 0.0
-            Current_accuracy = 0.0
-            
-            for batch_index, training_batch in enumerate(Training_set, 0):
-                
-                Inputs, Labels = training_batch
-                Inputs, Labels = Variable(Inputs), Variable(Labels)
-
-                Optimizer.zero_grad()
-                Outputs = self.forward(Inputs)
-
-                Loss = Loss_function(Outputs, Labels)
-                Current_loss += Loss.item()
-                
-                Loss.backward()
-                Optimizer.step()
-                
-                Total_pred = 0
-                Correct_pred = 0
-                
-                for data in training_batch:
-                    Images, Labels = training_batch
-
-                    Outputs = self.forward(Variable(Images))
-                    Dummy, Pred_labels = torch.max(Outputs.data, 1)
-                    
-                    Correct_pred += (Pred_labels == Labels).sum().item()
-                    Total_pred += Pred_labels.size(0)
-                    
-                Current_accuracy += (100 * Correct_pred)/Total_pred
-                Current_accuracy += (100 * Correct_pred)/Total_pred
-
-                if batch_index % 300 == 299:
-                    
-                    print('[Epoch: %d Batch: %5d] loss: %.3f' % 
-                          (epoch + 1, batch_index+1, Current_loss/300)) 
-                    
-                    self.Losses.append(Current_loss/300)
-                    self.Accuracies.append(Current_accuracy/300)
-
-                    Current_loss = 0.0
-                    Current_accuracy = 0.0
-      
-        print('Training finished')
-
-class ClassifyImage(object):
+class ClassifyImage():
     output_size = 28
     border_size = 10
-        
+
     def __init__(self):
         self.crop_list = []
         self.cropped_images = []
-        
+        self.to_be_deleted = []
+        self.countours = None
+        self.img = None
+        self.count_dropped = 0
+
+
     def set_img(self, img):
-        self.img = img #[:, :, 0]
-        #self.img = np.invert(self.img)
-        
-    def get_shape(self):
-        return self.img.shape
-        
-    def crop_image(self, img, y_min, height, x_min, width):
+        """Set image"""
+        self.img = img
+
+    def show_original_img(self):
+        """Shows the input image"""
+        plt.imshow(self.img, cmap=plt.cm.gray_r)
+        plt.show()
+
+    @classmethod
+    def crop_image(cls, img, y_min, height, x_min, width):
+        """Crops a subsection of an image in array format given the dimensions"""
         y_min = int(y_min)
         height = int(height)
         x_min = int(x_min)
         width = int(width)
 
-        return img[y_min:y_min+height , x_min:x_min+width,]
-    
-    
-    def find_img_contours(self):
+        return img[y_min:y_min+height, x_min:x_min+width,]
+
+    def find_img_contours(self, show_output=False):
+        """Finds contours in an Image and adds every contour to a crop list"""
+        if show_output:
+            from matplotlib import colors as mcolors
+            color = list(mcolors.BASE_COLORS.values())
+
         self.countours = measure.find_contours(self.img, 10)
-        
         self.crop_list = []
-        
-        for n, contour in enumerate(self.countours):
+
+        for index, contour in enumerate(self.countours):
 
             # Get extreme values of the contours
-            self.y_min, self.x_min = np.min([contour], axis=1)[0]
-            self.y_max, self.x_max = np.max([contour], axis=1)[0]
+            y_min, x_min = np.min([contour], axis=1)[0]
+            y_max, x_max = np.max([contour], axis=1)[0]
 
             # Compute the width and height a the box surrounding the countrous
-            self.width = self.x_max - self.x_min
-            self.height = self.y_max - self.y_min
-            
+            width = x_max - x_min
+            height = y_max - y_min
 
-            self.crop_list.append({'y_min': self.y_min, 'height': self.height, 'x_min': self.x_min, 'width': self.width, 'y_max': self.y_max, 'x_max': self.x_max})
+            if show_output:
+                plt.plot(contour[:, 1], contour[:, 0], linewidth=2)
+                plt.imshow(self.img, cmap=plt.cm.gray_r, interpolation='nearest')
+
+                plt.axvline(x=x_min, color=color[index], linestyle='--')
+                plt.axvline(x=x_min + width, color=color[index], linestyle='--')
+                plt.axhline(y=y_min + height, color=color[index], linestyle='--')
+                plt.axhline(y=y_min, color=color[index], linestyle='--')
+
+
+            self.crop_list.append({
+                'y_min': y_min,
+                'y_max': y_max,
+                'height': height,
+                'x_min': x_min,
+                'x_max': x_max,
+                'width': width
+                })
 
         # Sort the array in logical order
-        self.crop_list = sorted(self.crop_list, key=lambda x: x['x_min']) 
+        self.crop_list = sorted(self.crop_list, key=lambda x: x['x_min'])
 
         # Checks if any item of crop list is an subset of another subset
         # this happens when the inside of an say an 8 or 9 is selected as contour
         # these contours needs to be removed before processing
-        self.to_be_deleted = []
-        for crop in self.crop_list: 
+        for crop in self.crop_list:
             for crop_compare in self.crop_list:
-                x_min_within_x_axis = bool(crop['x_min'] > crop_compare['x_min'] and crop['x_min'] < crop_compare['x_max'])
-                x_max_within_x_axis = bool(crop['x_max'] < crop_compare['x_max'] and crop['x_max'] > crop_compare['x_min'])
-                
-                y_min_within_y_axis = bool(crop['y_min'] > crop_compare['y_min'] and crop['y_min'] < crop_compare['y_max'])
-                y_max_within_x_axis = bool(crop['y_max'] < crop_compare['y_max'] and crop['y_max'] > crop_compare['y_min'])
-                
+                x_min_within_x_axis = bool(
+                    crop['x_min'] > crop_compare['x_min'] and
+                    crop['x_min'] < crop_compare['x_max'])
+
+                x_max_within_x_axis = bool(
+                    crop['x_max'] < crop_compare['x_max'] and
+                    crop['x_max'] > crop_compare['x_min'])
+
+                y_min_within_y_axis = bool(
+                    crop['y_min'] > crop_compare['y_min'] and
+                    crop['y_min'] < crop_compare['y_max'])
+
+                y_max_within_x_axis = bool(
+                    crop['y_max'] < crop_compare['y_max'] and
+                    crop['y_max'] > crop_compare['y_min'])
+
                 # crop is subset of another crop when this is true
-                if(x_min_within_x_axis and x_max_within_x_axis and y_min_within_y_axis and y_max_within_x_axis):
+                if(x_min_within_x_axis and x_max_within_x_axis and
+                   y_min_within_y_axis and y_max_within_x_axis):
+
                     self.to_be_deleted.append(crop)
-               
+
         # Delete al the items form the to be deleted list
-        self.crop_list = [x for x in self.crop_list if x not in self.to_be_deleted]    
+        self.crop_list = [x for x in self.crop_list if x not in self.to_be_deleted]
 
         print('Number of contours found: {0}'.format(len(self.countours)))
         print('Number of contours deleted: {0}'.format(len(self.to_be_deleted)))
         print('Number in final crop list: {0}'.format(len(self.crop_list)))
-             
-        
-    def apply_cropping(self):
-        # Get size of the original image
-        original_size_y, original_size_x = self.get_shape()
-        self.count_dropped = 0
 
-        self.find_img_contours()
-        
-        for crop in self.crop_list:    
+        if show_output:
+            plt.title('Full image with crop lines')
+            plt.show()
+
+    def apply_cropping(self, show_output=False):
+        """Loops through the images and crops accordingly. 
+           Adds whitespace around the crop to make it a square"""
+        self.find_img_contours(show_output=show_output)
+
+        self.cropped_images = []
+
+        for crop in self.crop_list:
 
             # Crop image
-            self.cropped_image = self.crop_image(self.img, crop['y_min'], crop['height'], crop['x_min'], crop['width'])
+            cropped_image = self.crop_image(self.img, crop['y_min'], crop['height'],
+                                            crop['x_min'], crop['width'])
+
+            if show_output:
+                # Plot cropped image
+                plt.imshow(cropped_image, cmap=plt.cm.gray_r, interpolation='nearest')
+                plt.title('Cropped number')
+                plt.show()
 
             # Prepend and append white vertical white lines on each side to make it a square
-            if(crop['height'] > crop['width']):
-                ny,nx = self.cropped_image.shape
+            if crop['height'] > crop['width']:
+                y, x = cropped_image.shape
 
-                # Divide the differences between height and width by 2 since there are two lines added each iteration
-                for x in range(0, int((crop['height']-crop['width'])/2)):
+                # Divide the differences between height and width by 2
+                # since there are two lines added each iteration
+                for i in range(0, int((crop['height']-crop['width'])/2)):
 
                     # Add two lines, one on each side
-                    self.cropped_image = np.c_[np.zeros(int(ny)), self.cropped_image, np.zeros(int(ny))]
+                    cropped_image = np.c_[np.zeros(int(y)),
+                                          cropped_image, np.zeros(int(y))]
 
             # Prepend and append white horizontal white lines on each side to make it a square
-            if(crop['width'] > crop['height']):
-                ny,nx = self.cropped_image.shape
+            if crop['width'] > crop['height']:
+                y, x = cropped_image.shape
 
-                # Divide the differences between height and width by 2 since there are two lines added each iteration
-                for x in range(0, int((crop['width']-crop['height'])/2)):
+                # Divide the differences between height and width by 2
+                # since there are two lines added each iteration
+                for i in range(0, int((crop['width']-crop['height'])/2)):
                     # Add two lines, one on each side
-                    self.cropped_image = np.append(np.zeros([1, int(nx)]), self.cropped_image, axis=0)
-                    self.cropped_image = np.append(self.cropped_image, np.zeros([1, int(nx)]), axis=0)
+                    cropped_image = np.append(np.zeros([1, int(x)]),
+                                              cropped_image, axis=0)
 
-            
-            self.cropped_images.append(self.cropped_image)
+                    cropped_image = np.append(cropped_image,
+                                              np.zeros([1, int(x)]), axis=0)
+
+            if show_output:
+                # Plot cropped squared image
+                plt.imshow(cropped_image, cmap=plt.cm.gray_r, interpolation='nearest')
+                plt.title('Make corpped image a square')
+                plt.show()
+
+            self.cropped_images.append(cropped_image)
 
         print('{0} contours dropped'.format(self.count_dropped))
-        
-        
-    def classify(self):
-        print(len(self.cropped_images))
 
-        self.list = []
-        
-        self.apply_cropping()
+
+    def classify(self, show_output=False):
+        """Send the preprocessed images to the NN classifier"""
+        print('{0} Numbers to be classified'.format(len(self.cropped_images)))
+
+        return_list = []
+        self.apply_cropping(show_output=show_output)
         net = Neural_Network()
-        net.load_state_dict(torch.load('./API/tensor_sd.pt'))
+        net.load_state_dict(torch.load(TENSOR_LOCATION))
         net.eval()
 
         for image in self.cropped_images:
-            
-            
+
             image = Image.fromarray(image)
-            
+
+            # Resizes the number and adds a 10 px border
             transfrom = transforms.Compose([
                 transforms.Grayscale(),
                 transforms.Resize(self.output_size - self.border_size),
@@ -240,14 +209,19 @@ class ClassifyImage(object):
             ])
 
             img_tensor = transfrom(image)
+
+            if show_output:
+                plt.imshow(np.array(img_tensor)[0, :, :],
+                           cmap=plt.cm.gray_r, interpolation='nearest')
+                plt.title('Image used for classification')
+                plt.show()
+
             img_tensor.unsqueeze_(0)
 
-            img_tensor.shape
+            outputs = net.forward(Variable(img_tensor))
+            dummy, predicted_labels = torch.max(outputs.data, 1)
 
-            Outputs = net.forward(Variable(img_tensor))
-            Dummy, Predicted_labels = torch.max(Outputs.data, 1)
-            
-            self.list.append(int(Predicted_labels.numpy().max()))
-            print('Classified: {0}'.format(Predicted_labels.numpy().max()))
+            return_list.append(int(predicted_labels.numpy().max()))
+            print('Classified: {0}'.format(predicted_labels.numpy().max()))
 
-        return self.list
+        return return_list

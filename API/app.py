@@ -1,49 +1,53 @@
-from classify import *
+
+# encoding=utf8
+import base64
+
+from io import BytesIO
+from PIL import Image
+import numpy as np
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
-import base64
-from PIL import Image
-from io import BytesIO
-import numpy as np
-from json import dumps
+from classify import ClassifyImage
 
 
-app = Flask(__name__)
+APP = Flask(__name__)
 
 # Allow CORS for all domains on all routes
-CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(APP)
+APP.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route('/status')
+@APP.route('/status')
 @cross_origin()
 def status():
+    """Endpoint to check if API is live"""
     return "OK", 200
- 
 
-@app.route('/image', methods=['POST'])
+
+@APP.route('/image', methods=['POST'])
 @cross_origin()
 def image():
+    """Classify numbers on POST request to /images"""
 
-	if not('imgBase64' in request.form):
-		return 'Missing imgBas64 input field', 400
+    if 'imgBase64' not in request.form:
+        return 'Missing imgBas64 input field', 400
 
-	try:
-		image_base = request.form['imgBase64']
+    try:
+        image_base = request.form['imgBase64']
 
-		image_base = image_base.replace('data:image/png;base64,', '')
-		im = np.array(Image.open(BytesIO(base64.b64decode(image_base))))[:, :, 3]
+        image_base = image_base.replace('data:image/png;base64,', '')
+        image_array = np.array(Image.open(BytesIO(base64.b64decode(image_base))))[:, :, 3]
 
-		c = ClassifyImage()
-		c.set_img(im)
+        classify = ClassifyImage()
+        classify.set_img(image_array)
 
-		return dumps(c.classify()), 200
+        return jsonify(classify.classify()), 200
 
-	except Exception as e:
-		print(e);
-		return 'Something went wrong: ' + str(e), 500
+    except Exception as error:
+        print(error)
+        return 'Something went wrong: ' + str(error), 500
 
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000)
+    APP.run(host='127.0.0.1', port=5000)

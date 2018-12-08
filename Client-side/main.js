@@ -1,3 +1,90 @@
+window.onload = function() {
+
+	// Add event listeners for desktop
+
+	canvas.addEventListener('mousemove', function(event){
+		if(mouse_pressed){
+			draw_line(event);
+		}
+	});
+
+	canvas.addEventListener('mousedown', function(event){
+		// Remove welcome text the first time you click on the canvas
+		if(init){
+			clear_canvas();
+			init = false;
+		}
+		x_0 = event.layerX;
+		y_0 = event.layerY;
+
+		mouse_pressed = true;
+
+		lock_scroll();
+	});
+
+	canvas.addEventListener('mouseup', function(){
+		mouse_pressed = false;
+		x_0, y_0 = (null, null);
+
+		release_scroll();
+	});
+
+	canvas.addEventListener('mouseout', function(){
+		mouse_pressed = false;
+		x_0, y_0 = (null, null);
+
+		release_scroll();
+	});
+
+
+	// Add event listeners for mobile
+
+	canvas.addEventListener('touchmove', function(event){
+		if(mouse_pressed){
+			draw_line(event);
+		}
+
+		event.preventDefault();
+	});
+
+	canvas.addEventListener('touchstart', function(event){
+		// Remove welcome text the first time you click on the canvas
+		if(init){
+			clear_canvas();
+			init = false;
+		}
+		x_0 = event.layerX;
+		y_0 = event.layerY;
+
+		mouse_pressed = true;
+
+		event.preventDefault();
+
+		lock_scroll();
+	});
+
+	canvas.addEventListener('touchend', function(event){
+		mouse_pressed = false;
+		x_0, y_0 = (null, null);
+
+		event.preventDefault();
+
+		release_scroll();
+	});
+
+	canvas.addEventListener('touchcancel', function(event){
+		return true;
+
+		mouse_pressed = false;
+		x_0, y_0 = (null, null);
+
+		event.preventDefault();
+
+		release_scroll();
+	});
+
+}
+
 var ctx = document.getElementById('canvas').getContext('2d');
 
 var init = true;
@@ -77,89 +164,6 @@ function release_scroll(){
 show_welcome_text();
 
 
-// Add event listeners for desktop
-
-canvas.addEventListener('mousemove', function(event){
-	if(mouse_pressed){
-		draw_line(event);
-	}
-});
-
-canvas.addEventListener('mousedown', function(event){
-	// Remove welcome text the first time you click on the canvas
-	if(init){
-		clear_canvas();
-		init = false;
-	}
-	x_0 = event.layerX;
-	y_0 = event.layerY;
-
-	mouse_pressed = true;
-
-	lock_scroll();
-});
-
-canvas.addEventListener('mouseup', function(){
-	mouse_pressed = false;
-	x_0, y_0 = (null, null);
-
-	release_scroll();
-});
-
-canvas.addEventListener('mouseout', function(){
-	mouse_pressed = false;
-	x_0, y_0 = (null, null);
-
-	release_scroll();
-});
-
-
-// Add event listeners for mobile
-
-canvas.addEventListener('touchmove', function(event){
-	if(mouse_pressed){
-		draw_line(event);
-	}
-
-	event.preventDefault();
-});
-
-canvas.addEventListener('touchstart', function(event){
-	// Remove welcome text the first time you click on the canvas
-	if(init){
-		clear_canvas();
-		init = false;
-	}
-	x_0 = event.layerX;
-	y_0 = event.layerY;
-
-	mouse_pressed = true;
-
-	event.preventDefault();
-
-	lock_scroll();
-});
-
-canvas.addEventListener('touchend', function(event){
-	mouse_pressed = false;
-	x_0, y_0 = (null, null);
-
-	event.preventDefault();
-
-	release_scroll();
-});
-
-canvas.addEventListener('touchcancel', function(event){
-	return true;
-	
-	mouse_pressed = false;
-	x_0, y_0 = (null, null);
-
-	event.preventDefault();
-
-	release_scroll();
-});
-
 
 var ClassifyText = function(){
 
@@ -184,7 +188,8 @@ var ClassifyText = function(){
 	console.log(canvas_url);
 
 	$.ajax({
-		url: 'https://bau-test-api.herokuapp.com/image',
+		// url: 'https://bau-test-api.herokuapp.com/image',
+		url: 'http://localhost:5000/image',
 		method: 'POST',
 		crossDomain: true,
 		data: { 
@@ -192,7 +197,7 @@ var ClassifyText = function(){
 		}
 	}) .done(function(result) {
 
-		result = result.replace(/(\[|\]|,)/g, '');
+		result = result.join(' ')
 
 		console.log(result);
 
