@@ -188,8 +188,8 @@ var ClassifyText = function(){
 	console.log(canvas_url);
 
 	$.ajax({
-		// url: 'https://bau-test-api.herokuapp.com/image',
-		url: 'http://localhost:5000/image',
+		url: 'https://bau-test-api.herokuapp.com/image',
+		// url: 'http://localhost:5000/image',
 		method: 'POST',
 		crossDomain: true,
 		data: { 
