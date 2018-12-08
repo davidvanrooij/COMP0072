@@ -90,12 +90,15 @@ var ctx = document.getElementById('canvas').getContext('2d');
 var init = true;
 var mouse_pressed = false;
 var x_0, y_0 = (0, 0);
+var welcome_text = undefined;
+var empty_canvas = undefined;
 
 
 // Function to show welcome text
 function show_welcome_text() {
 	ctx.font = '20px Noto Sans';
 	ctx.fillText('Start drawing symbols here!', 100, 150-10);
+	welcome_text = true; 
 }
 
 // Clear canvas
@@ -110,6 +113,9 @@ function clear_canvas(){
 
 	// Hide old results
 	$('.results').hide();
+
+	empty_canvas = true;
+	welcome_text = false;
 }
 
 function create_border(){
@@ -143,10 +149,12 @@ function draw_line(event) {
 	ctx.closePath();
 	ctx.stroke();
 
-
 	// Save curser coordinates as last point
 	x_0 = x_1;
 	y_0 = y_1;
+
+
+	empty_canvas = false;
 }
 
 
@@ -183,6 +191,32 @@ var ClassifyText = function(){
 	// Save canvas
 	canvas_url = canvas.toDataURL();
 
+	// Canvas with welcome text
+	if(welcome_text){	
+		$('#error_status').text('Don\'t be shy!');
+		$('#error_text').text('Go and draw some numbers!');
+		$('.alert').show();
+
+		// Set icons back to default state
+		$('.spinner').hide();
+		$('.label').css('display', 'inline-flex');
+
+		return;
+	}
+
+	// Empty canvas
+	if(empty_canvas){	
+		$('#error_status').text('Are you trying to cheat?');
+		$('#error_text').text('we cannot classify anything on an empty canvas!');
+		$('.alert').show();
+
+		// Set icons back to default state
+		$('.spinner').hide();
+		$('.label').css('display', 'inline-flex');
+
+		return;
+	}
+
 	$('#imageURL').text(canvas_url);
 
 	console.log(canvas_url);
@@ -197,17 +231,31 @@ var ClassifyText = function(){
 		}
 	}) .done(function(result) {
 
-		result = result.join(' ')
-
 		console.log(result);
+
+		// Set icons back to default state
+		$('.spinner').hide();
+		$('.label').css('display', 'inline-flex');
+
+
+		if(result.length == 0){
+			$('#error_status').text('This is awkward...');
+			$('#error_text').text('We were unable to classify anything');
+			$('.alert').show();
+
+			// Set icons back to default state
+			$('.spinner').hide();
+			$('.label').css('display', 'inline-flex');
+
+			return;
+		}
+
+		result = result.join(' ');
 
 		// Show results
 		$('.results').show();
 		$('#result').text(result);
 
-		// Set icons back to default state
-		$('.spinner').hide();
-		$('.label').css('display', 'inline-flex');
 
 	})
 	.fail(function(error) {
