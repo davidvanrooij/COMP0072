@@ -39,49 +39,49 @@ window.onload = function() {
 
 	// Add event listeners for mobile
 
-	canvas.addEventListener('touchmove', function(event){
-		if(mouse_pressed){
-			draw_line(event);
-		}
+	// canvas.addEventListener('touchmove', function(event){
+	// 	if(mouse_pressed){
+	// 		draw_line(event);
+	// 	}
 
-		event.preventDefault();
-	});
+	// 	event.preventDefault();
+	// });
 
-	canvas.addEventListener('touchstart', function(event){
-		// Remove welcome text the first time you click on the canvas
-		if(init){
-			clear_canvas();
-			init = false;
-		}
-		x_0 = event.layerX;
-		y_0 = event.layerY;
+	// canvas.addEventListener('touchstart', function(event){
+	// 	// Remove welcome text the first time you click on the canvas
+	// 	if(init){
+	// 		clear_canvas();
+	// 		init = false;
+	// 	}
+	// 	x_0 = event.layerX;
+	// 	y_0 = event.layerY;
 
-		mouse_pressed = true;
+	// 	mouse_pressed = true;
 
-		event.preventDefault();
+	// 	event.preventDefault();
 
-		lock_scroll();
-	});
+	// 	lock_scroll();
+	// });
 
-	canvas.addEventListener('touchend', function(event){
-		mouse_pressed = false;
-		x_0, y_0 = (null, null);
+	// canvas.addEventListener('touchend', function(event){
+	// 	mouse_pressed = false;
+	// 	x_0, y_0 = (null, null);
 
-		event.preventDefault();
+	// 	event.preventDefault();
 
-		release_scroll();
-	});
+	// 	release_scroll();
+	// });
 
-	canvas.addEventListener('touchcancel', function(event){
-		return true;
+	// canvas.addEventListener('touchcancel', function(event){
+	// 	return true;
 
-		mouse_pressed = false;
-		x_0, y_0 = (null, null);
+	// 	mouse_pressed = false;
+	// 	x_0, y_0 = (null, null);
 
-		event.preventDefault();
+	// 	event.preventDefault();
 
-		release_scroll();
-	});
+	// 	release_scroll();
+	// });
 
 }
 
