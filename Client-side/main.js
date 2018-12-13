@@ -4,11 +4,12 @@ window.onload = function() {
 
 	canvas.addEventListener('mousemove', function(event){
 		if(mouse_pressed){
-			draw_line(event);
+			draw_line(event.layerX, event.layerY);
 		}
 	});
 
 	canvas.addEventListener('mousedown', function(event){
+
 		// Remove welcome text the first time you click on the canvas
 		if(init){
 			clear_canvas();
@@ -39,49 +40,54 @@ window.onload = function() {
 
 	// Add event listeners for mobile
 
-	// canvas.addEventListener('touchmove', function(event){
-	// 	if(mouse_pressed){
-	// 		draw_line(event);
-	// 	}
+	canvas.addEventListener('touchstart', function(event){
 
-	// 	event.preventDefault();
-	// });
+		var rect = canvas.getBoundingClientRect();
 
-	// canvas.addEventListener('touchstart', function(event){
-	// 	// Remove welcome text the first time you click on the canvas
-	// 	if(init){
-	// 		clear_canvas();
-	// 		init = false;
-	// 	}
-	// 	x_0 = event.layerX;
-	// 	y_0 = event.layerY;
+		// Remove welcome text the first time you click on the canvas
+		if(init){
+			clear_canvas();
+			init = false;
+		}
 
-	// 	mouse_pressed = true;
+		x_0 = event.touches[0].clientX - rect.left;
+		y_0 = event.touches[0].clientY - rect.top;
 
-	// 	event.preventDefault();
+		mouse_pressed = true;
 
-	// 	lock_scroll();
-	// });
+		lock_scroll();
+	});
 
-	// canvas.addEventListener('touchend', function(event){
-	// 	mouse_pressed = false;
-	// 	x_0, y_0 = (null, null);
+	canvas.addEventListener('touchmove', function(event){
 
-	// 	event.preventDefault();
+		event.preventDefault();
 
-	// 	release_scroll();
-	// });
+		var rect = canvas.getBoundingClientRect();
 
-	// canvas.addEventListener('touchcancel', function(event){
-	// 	return true;
+		x_1 = event.touches[0].clientX - rect.left;
+		y_1 = event.touches[0].clientY - rect.top;
 
-	// 	mouse_pressed = false;
-	// 	x_0, y_0 = (null, null);
+		if(mouse_pressed){
+			draw_line(x_1, y_1);
+		}
+	});
 
-	// 	event.preventDefault();
+	canvas.addEventListener('touchend', function(event){
 
-	// 	release_scroll();
-	// });
+		mouse_pressed = false;
+		x_0, y_0 = (null, null);
+
+		release_scroll();
+	});
+
+	canvas.addEventListener('touchcancel', function(event){
+		event.preventDefault();
+
+		mouse_pressed = false;
+		x_0, y_0 = (null, null);
+
+		release_scroll();
+	});
 
 }
 
@@ -133,11 +139,7 @@ function create_border(){
 }
 
 // Let the user draw lines
-function draw_line(event) {
-	// Get curser coordinates 
-	var x_1 = event.layerX;
-	var y_1 = event.layerY;
-
+function draw_line(x_1,y_1) {
 	// var cursor_speed = (Math.sqrt((x_1 - x_0)*(x_1 - x_0) + (y_1- y_0)*(y_1 - y_0)) + 1) * -0.3;
 	// console.log(cursor_speed);
 
