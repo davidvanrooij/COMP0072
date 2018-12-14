@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 from neural_network import Neural_Network
 
 if 'FLASK_ENV' in os.environ and os.environ['FLASK_ENV'] == 'development':
-    TENSOR_LOCATION = 'tensor_sd.pt'
+    TENSOR_LOCATION = 'tensor_letters_sd.pt'
 else:
-    TENSOR_LOCATION = './API/tensor_sd.pt'
+    TENSOR_LOCATION = './API/tensor_letters_sd.pt'
 
 
 class ClassifyImage():
