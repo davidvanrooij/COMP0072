@@ -224,7 +224,7 @@ var ClassifyText = function(){
 	console.log(canvas_url);
 
 	$.ajax({
-		url: 'https://bau-test-api.herokuapp.com' +api_endpoint ,
+		url: 'https://bau-letters-api.herokuapp.com' +api_endpoint ,
 		// url: 'http://localhost:5000' + api_endpoint,
 		method: 'POST',
 		crossDomain: true,
