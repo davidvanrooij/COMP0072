@@ -91,14 +91,14 @@ window.onload = function() {
 
 }
 
-var ctx = document.getElementById('canvas').getContext('2d');
+const ctx = document.getElementById('canvas').getContext('2d');
 
-var init = true;
-var mouse_pressed = false;
-var x_0, y_0 = (0, 0);
-var welcome_text = undefined;
-var empty_canvas = undefined;
-
+let init = true;
+let mouse_pressed = false;
+let x_0, y_0 = (0, 0);
+let welcome_text = undefined;
+let empty_canvas = undefined;
+let api_endpoint = '/image'
 
 // Function to show welcome text
 function show_welcome_text() {
@@ -224,8 +224,8 @@ var ClassifyText = function(){
 	console.log(canvas_url);
 
 	$.ajax({
-		url: 'https://bau-test-api.herokuapp.com/image',
-		// url: 'http://localhost:5000/image',
+		url: 'https://bau-test-api.herokuapp.com' +api_endpoint ,
+		// url: 'http://localhost:5000' + api_endpoint,
 		method: 'POST',
 		crossDomain: true,
 		data: { 

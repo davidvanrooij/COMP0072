@@ -53,6 +53,40 @@ def image():
     except Exception as error:
         return jsonify(error=400, text='Cannot process imgBase64 string provided'), 400
 
+
+@APP.route('/experimental/image', methods=['POST'])
+@cross_origin()
+def experimental_image():
+    """Classify numbers on POST request to /images"""
+
+    # Required field is missing
+    if 'imgBase64' not in request.form:
+        return jsonify(error=400, text='Missing imgBase64 input field'), 400
+
+    try:
+        image_base = request.form['imgBase64']
+        image_base = image_base.replace('data:image/png;base64,', '')
+        image_decoded = base64.b64decode(image_base)
+        image_array = np.array(Image.open(BytesIO(image_decoded)))[:, :, 3]
+
+
+        return jsonify(error=500, text='Not supported yet'), 503
+
+        try:
+
+            #CHANGE THIS
+            classify = ClassifyImage()
+            classify.set_img(image_array)
+            return jsonify(classify.classify()), 200
+
+        # Could not classify image
+        except Exception as error:
+            return jsonify(error=500, text=str(error)), 500
+
+    # Base64 string contains an error or not an image
+    except Exception as error:
+        return jsonify(error=400, text='Cannot process imgBase64 string provided'), 400
+
 @APP.errorhandler(404)
 def not_found(e):
     """Returns 404 not found error's in a json format"""
