@@ -1,49 +1,67 @@
-from classify import *
+
+# encoding=utf8
+import base64
+
+from io import BytesIO
+from PIL import Image
+import numpy as np
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
-import base64
-from PIL import Image
-from io import BytesIO
-import numpy as np
-from json import dumps
+from classify import ClassifyImage
 
 
-app = Flask(__name__)
+APP = Flask(__name__)
 
 # Allow CORS for all domains on all routes
-CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(APP)
+APP.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route('/status')
+@APP.route('/status')
 @cross_origin()
 def status():
+    """Endpoint to check if API is live"""
     return "OK", 200
- 
 
-@app.route('/image', methods=['POST'])
+
+@APP.route('/image', methods=['POST'])
 @cross_origin()
 def image():
+    """Classify numbers on POST request to /images"""
 
-	if not('imgBase64' in request.form):
-		return 'Missing imgBas64 input field', 400
+    # Required field is missing
+    if 'imgBase64' not in request.form:
+        return jsonify(error=400, text='Missing imgBase64 input field'), 400
 
-	try:
-		image_base = request.form['imgBase64']
+    try:
+        image_base = request.form['imgBase64']
+        image_base = image_base.replace('data:image/png;base64,', '')
+        image_decoded = base64.b64decode(image_base)
+        image_array = np.array(Image.open(BytesIO(image_decoded)))[:, :, 3]
 
-		image_base = image_base.replace('data:image/png;base64,', '')
-		im = np.array(Image.open(BytesIO(base64.b64decode(image_base))))[:, :, 3]
+        try:
+            classify = ClassifyImage()
+            classify.set_img(image_array)
+            return jsonify(classify.classify()), 200
 
-		c = ClassifyImage()
-		c.set_img(im)
+        # Could not classify image
+        except Exception as error:
+            return jsonify(error=500, text=str(error)), 500
 
-		return dumps(c.classify()), 200
+    # Base64 string contains an error or not an image
+    except Exception as error:
+        return jsonify(error=400, text='Cannot process imgBase64 string provided'), 400
 
-	except Exception as e:
-		print(e);
-		return 'Something went wrong: ' + str(e), 500
+@APP.errorhandler(404)
+def not_found(e):
+    """Returns 404 not found error's in a json format"""
+    return jsonify(error=404, text=str(e)), 404
 
+@APP.errorhandler(405)
+def invalid_method(e):
+    """Returns 405 invalid method error's in a json format"""
+    return jsonify(error=405, text=str(e)), 405
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000)
+    APP.run(host='127.0.0.1', port=5000)
