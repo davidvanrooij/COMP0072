@@ -21,7 +21,7 @@ else:
 
 class ClassifyImage():
     output_size = 28
-    border_size = 10
+    border_size = 2
 
     def __init__(self):
         self.crop_list = []
