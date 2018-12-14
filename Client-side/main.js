@@ -258,14 +258,15 @@ var ClassifyText = function(){
 		$('.results').show();
 		$('#result').text(result);
 
-
 	})
 	.fail(function(error) {
+
+		let error_text = error.responseJSON ? error.responseJSON.text : error.responseText
 
 		// Show errors
 		console.log('my error', error, error.status, error.responseText, error.statusText);
 		$('#error_status').text('Error ' + error.status + ' (' + error.statusText + ')');
-		$('#error_text').text(error.responseText);
+		$('#error_text').text(error_text);
 		$('.alert').show();
 
 		// Set icons back to default state
