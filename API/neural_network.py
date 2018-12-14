@@ -21,7 +21,7 @@ class Neural_Network(nn.Module):
         
         self.fc1 = nn.Linear(16*5*5, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.fc3 = nn.Linear(84, 26)
         
         self.Losses = []
         self.Accuracies = []
