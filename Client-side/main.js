@@ -255,7 +255,7 @@ var ClassifyText = function(){
 		//result = result.join(' ');
 		tmp_str = "";
 		for (index = 0; index < result.length; ++index) {
-			tmp_str+=String.fromCharCode(result[index]) + ' ';
+			tmp_str+=String.fromCharCode(result[index]+65) + ' ';
 		}
 		result = tmp_str;
 		
