@@ -19,9 +19,9 @@ class Neural_Network(nn.Module):
         
         self.pool = nn.MaxPool2d(2, 2)
         
-        self.fc1 = nn.Linear(16*5*5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 26)
+        self.fc1 = nn.Linear(16*5*5, 512)
+            self.fc2 = nn.Linear(512, 256)
+            self.fc3 = nn.Linear(256, 26)
         
         self.Losses = []
         self.Accuracies = []
