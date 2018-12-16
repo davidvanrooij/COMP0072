@@ -251,8 +251,14 @@ var ClassifyText = function(){
 
 			return;
 		}
-
-		result = result.join(' ');
+				
+		//result = result.join(' ');
+		tmp_str = "";
+		for (index = 0; index < result.length; ++index) {
+			tmp_str+=String.fromCharCode(result[index]) + ' ';
+		}
+		result = tmp_str;
+		
 
 		// Show results
 		$('.results').show();
