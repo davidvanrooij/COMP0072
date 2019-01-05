@@ -1,4 +1,4 @@
-# COMP0072 - Programming for business analytics
+# COMP0072 - Programming for Business Analytics
 
 Group Project - Team name: Business as usual
 
