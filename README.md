@@ -1,6 +1,6 @@
 # COMP0072 - Programming for Business Analytics
 
-Group Project - Team name: Business as usual
+Group Project - Team name: Business as usual [3]
 
 Team members: <br>
 <br>
@@ -11,7 +11,8 @@ van Rooij David (18136657) <br>
 Srinivasan Arun (18109601) <br>
 
 # DESCRIPTION
-
+Digit classifier based on MNIST dataset [https://webmomentum.io]<br/>
+Letter recognizer based on EMNIST dataset (Beta)[https://letters.webmomentum.io/]
 
 #### IMPORTANT! EVERY COMMIT TO THE MASTER BRANCH GET DEPLOYED TO LIVE PRODUCTION
 [/Client-side](/Client-side) gets deployed to https://webmomentum.io <br />
